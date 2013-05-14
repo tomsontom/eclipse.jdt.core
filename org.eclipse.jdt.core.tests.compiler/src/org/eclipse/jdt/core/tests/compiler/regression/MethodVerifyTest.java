@@ -13882,7 +13882,6 @@ public void test354229d() {
 		"Method e(Action<S>) has the same erasure e(Action<T>) as another method in type X\n" + 
 		"----------\n");
 }
-<<<<<<< BETA_JAVA8_CHERRY
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=384580, Apply changes in JLS 8.4.5 to calculation of duplicate method return types
 public void testBug384580() {
 	this.runNegativeTest(
@@ -13915,7 +13914,7 @@ public void testBug384580() {
 		"	                   ^^^\n" + 
 		"Name clash: The method m() of type Foo has the same erasure as m() of type Y but does not override it\n" + 
 		"----------\n");
-=======
+}
 // https://bugs.eclipse.org/406928 - computation of inherited methods seems damaged (affecting @Overrides)
 public void testBug406928() {
 	if (this.complianceLevel < ClassFileConstants.JDK1_6) return;
@@ -13934,6 +13933,5 @@ public void testBug406928() {
 			"}\n"
 		},
 		"");
->>>>>>> 97c9363 Bug 406928 - computation of inherited methods seems damaged (affecting @Overrides)
 }
 }
