@@ -22,6 +22,8 @@
  *								bug 395977 - [compiler][resource] Resource leak warning behavior possibly incorrect for anonymous inner class
  *     Jesper S Moller <jesper@selskabet.org> - Contributions for
  *								bug 378674 - "The method can be declared as static" is wrong
+ *        Andy Clement - Contributions for
+ *                          Bug 383624 - [1.8][compiler] Revive code generation support for type annotations (from Olivier's work)
  ******************************************************************************/
 package org.eclipse.jdt.internal.compiler.ast;
 
@@ -158,7 +160,7 @@ public class QualifiedAllocationExpression extends AllocationExpression {
 		int pc = codeStream.position;
 		MethodBinding codegenBinding = this.binding.original();
 		ReferenceBinding allocatedType = codegenBinding.declaringClass;
-		codeStream.new_(allocatedType);
+		codeStream.new_(this.type, allocatedType);
 		boolean isUnboxing = (this.implicitConversion & TypeIds.UNBOXING) != 0;
 		if (valueRequired || isUnboxing) {
 			codeStream.dup();
@@ -191,7 +193,7 @@ public class QualifiedAllocationExpression extends AllocationExpression {
 
 		// invoke constructor
 		if (this.syntheticAccessor == null) {
-			codeStream.invoke(Opcodes.OPC_invokespecial, codegenBinding, null /* default declaringClass */);
+			codeStream.invoke(Opcodes.OPC_invokespecial, codegenBinding, null /* default declaringClass */, this.typeArguments);
 		} else {
 			// synthetic accessor got some extra arguments appended to its signature, which need values
 			for (int i = 0,

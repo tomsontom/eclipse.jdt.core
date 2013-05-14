@@ -23,6 +23,8 @@
  *							bug 388996 - [compiler][resource] Incorrect 'potential resource leak'
  *     Jesper S Moller <jesper@selskabet.org> - Contributions for
  *							bug 378674 - "The method can be declared as static" is wrong
+ *        Andy Clement - Contributions for
+ *                          Bug 383624 - [1.8][compiler] Revive code generation support for type annotations (from Olivier's work)
  *******************************************************************************/
 package org.eclipse.jdt.internal.compiler.ast;
 
@@ -141,7 +143,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean
 	MethodBinding codegenBinding = this.binding.original();
 	ReferenceBinding allocatedType = codegenBinding.declaringClass;
 
-	codeStream.new_(allocatedType);
+	codeStream.new_(this.type, allocatedType);
 	boolean isUnboxing = (this.implicitConversion & TypeIds.UNBOXING) != 0;
 	if (valueRequired || isUnboxing) {
 		codeStream.dup();
@@ -174,7 +176,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean
 	}
 	// invoke constructor
 	if (this.syntheticAccessor == null) {
-		codeStream.invoke(Opcodes.OPC_invokespecial, codegenBinding, null /* default declaringClass */);
+		codeStream.invoke(Opcodes.OPC_invokespecial, codegenBinding, null /* default declaringClass */, this.typeArguments);
 	} else {
 		// synthetic accessor got some extra arguments appended to its signature, which need values
 		for (int i = 0,
